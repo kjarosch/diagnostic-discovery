@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diagnostic Discovery Practice — Overview</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #f5f7fa;
+    color: #1a1a1a;
+    line-height: 1.5;
+    padding: 24px;
+  }
+  .container { max-width: 1100px; margin: 0 auto; }
+
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+  .eyebrow {
+    color: #1a4480;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .header h1 {
+    font-size: 32px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 12px;
+  }
+  .header .subhead {
+    font-size: 17px;
+    color: #555;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  /* Section labels */
+  .section-label {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #1a4480;
+    margin-bottom: 14px;
+    text-align: center;
+  }
+
+  /* Scenario grid */
+  .scenarios {
+    margin-bottom: 36px;
+  }
+  .scenario-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  @media (max-width: 720px) {
+    .scenario-grid { grid-template-columns: 1fr; }
+  }
+
+  .scenario-card {
+    background: white;
+    border: 2px solid #e3e8ef;
+    border-radius: 10px;
+    padding: 20px 22px;
+    transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+    cursor: default;
+    position: relative;
+  }
+  .scenario-card:hover {
+    transform: translateY(-2px);
+    border-color: #1a4480;
+    box-shadow: 0 6px 16px rgba(26, 68, 128, 0.1);
+  }
+
+  .scenario-card.scored {
+    border-color: #d4a017;
+    background: linear-gradient(180deg, #fef9e7 0%, #ffffff 100%);
+  }
+  .scenario-card.scored:hover {
+    border-color: #b8860b;
+    box-shadow: 0 6px 16px rgba(212, 160, 23, 0.18);
+  }
+
+  .badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 4px;
+    margin-bottom: 12px;
+  }
+  .badge.practice {
+    background: #e8f0fe;
+    color: #1a4480;
+  }
+  .badge.scored {
+    background: #d4a017;
+    color: white;
+  }
+
+  .scenario-name {
+    font-size: 19px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 4px;
+  }
+  .scenario-business {
+    font-size: 13px;
+    color: #777;
+    margin-bottom: 12px;
+    font-style: italic;
+  }
+  .scenario-description {
+    font-size: 14px;
+    color: #444;
+    line-height: 1.5;
+  }
+
+  /* Rubric panel */
+  .rubric {
+    background: white;
+    border: 1px solid #e3e8ef;
+    border-radius: 10px;
+    padding: 24px;
+    margin-bottom: 28px;
+  }
+  .rubric-header {
+    text-align: center;
+    margin-bottom: 18px;
+  }
+  .rubric-header .title {
+    font-size: 17px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 4px;
+  }
+  .rubric-header .sub {
+    font-size: 13px;
+    color: #666;
+  }
+  .rubric-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  @media (max-width: 720px) {
+    .rubric-grid { grid-template-columns: 1fr; }
+  }
+  .rubric-item {
+    text-align: center;
+    padding: 16px 12px;
+    background: #f5f7fa;
+    border-radius: 8px;
+  }
+  .rubric-item .num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background: #1a4480;
+    color: white;
+    border-radius: 50%;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  .rubric-item .label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 4px;
+  }
+  .rubric-item .desc {
+    font-size: 12px;
+    color: #666;
+    line-height: 1.4;
+  }
+
+  /* Rules panel */
+  .rules {
+    background: white;
+    border: 1px solid #e3e8ef;
+    border-radius: 10px;
+    padding: 22px 28px;
+    margin-bottom: 28px;
+  }
+  .rules-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 14px;
+    text-align: center;
+  }
+  .rules-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px 24px;
+    list-style: none;
+  }
+  @media (max-width: 720px) {
+    .rules-list { grid-template-columns: 1fr; }
+  }
+  .rule {
+    display: flex;
+    align-items: flex-start;
+    font-size: 13.5px;
+    color: #333;
+    line-height: 1.5;
+  }
+  .rule-icon {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #e8f0fe;
+    color: #1a4480;
+    font-size: 12px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+    margin-top: 1px;
+  }
+
+  /* Ready prompt */
+  .ready {
+    text-align: center;
+    padding: 22px;
+    background: linear-gradient(180deg, #1a4480 0%, #15376b 100%);
+    color: white;
+    border-radius: 10px;
+  }
+  .ready-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .ready-sub {
+    font-size: 13.5px;
+    opacity: 0.92;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <div class="eyebrow">Diagnostic Discovery</div>
+    <h1>Practice with four pros</h1>
+    <div class="subhead">You'll run discovery on four real-world scenarios. Three are for practice — replay them as much as you want. The fourth is your scored capstone.</div>
+  </div>
+
+  <div class="scenarios">
+    <div class="section-label">Your scenarios</div>
+    <div class="scenario-grid">
+
+      <div class="scenario-card">
+        <div class="badge practice">Practice</div>
+        <div class="scenario-name">Maria</div>
+        <div class="scenario-business">Solo house cleaner · Outbound call</div>
+        <div class="scenario-description">A one-person operation looking to grow. Clear pain points, but you'll have to layer your follow-ups to surface them.</div>
+      </div>
+
+      <div class="scenario-card">
+        <div class="badge practice">Practice</div>
+        <div class="scenario-name">Devon</div>
+        <div class="scenario-business">Small landscaping crew · Recent sign-up</div>
+        <div class="scenario-description">Just signed up and trying to figure out what's working. Your job is to read the signals and recommend the right fit.</div>
+      </div>
+
+      <div class="scenario-card">
+        <div class="badge practice">Practice</div>
+        <div class="scenario-name">Linda</div>
+        <div class="scenario-business">Cleaning business · Dormant, prior bad experience</div>
+        <div class="scenario-description">She's been on Thumbtack before and it didn't go well. Discovery here means surfacing what actually went wrong before recommending anything.</div>
+      </div>
+
+      <div class="scenario-card scored">
+        <div class="badge scored">⚠ Scored Capstone</div>
+        <div class="scenario-name">Marcus</div>
+        <div class="scenario-business">Electrical contractor · Sophisticated buyer</div>
+        <div class="scenario-description">An 8-person contractor who's been around the block. Sharp financial questions, knows what he's doing. One scored attempt — your results go to your manager.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="rubric">
+    <div class="rubric-header">
+      <div class="title">What you're being scored on</div>
+      <div class="sub">Same three behaviors on every call</div>
+    </div>
+    <div class="rubric-grid">
+      <div class="rubric-item">
+        <div class="num">1</div>
+        <div class="label">Layered follow-up questions</div>
+        <div class="desc">Surface two things at once — present and implication, pain and cost.</div>
+      </div>
+      <div class="rubric-item">
+        <div class="num">2</div>
+        <div class="label">Package recommendation tied to discovery</div>
+        <div class="desc">Anchor your recommendation in the pro's actual words, not features.</div>
+      </div>
+      <div class="rubric-item">
+        <div class="num">3</div>
+        <div class="label">ROI framed using market averages</div>
+        <div class="desc">Use Mega Dashboard data as ranges. Never quote an exact lead price.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="rules">
+    <div class="rules-title">A few things to know before you start</div>
+    <ul class="rules-list">
+      <li class="rule"><span class="rule-icon">!</span><span><strong>Three missteps and the pro ends the call.</strong> That's tighter than some pros — the point is to keep you in diagnostic mode.</span></li>
+      <li class="rule"><span class="rule-icon">↻</span><span><strong>Replay practice scenarios anytime.</strong> Maria, Devon, and Linda are unscored — drill them as often as you want.</span></li>
+      <li class="rule"><span class="rule-icon">⭑</span><span><strong>Marcus is your one scored attempt.</strong> After your scored run, he unlocks for unscored practice.</span></li>
+      <li class="rule"><span class="rule-icon">📋</span><span><strong>Send results to your manager.</strong> Optional for practice scenarios, required for Marcus — you'll get a copy-to-Slack button at the end.</span></li>
+    </ul>
+  </div>
+
+  <div class="ready">
+    <div class="ready-title">Ready when you are.</div>
+    <div class="ready-sub">The first scenario — Maria — loads on the next page.</div>
+  </div>
+
+</div>
+</body>
+</html>
