@@ -1,0 +1,2113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diagnostic Discovery Roleplay — Linda</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #f5f7fa;
+    color: #1a1a1a;
+    line-height: 1.5;
+    padding: 20px;
+  }
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 20px;
+  }
+  @media (max-width: 900px) {
+    .container { grid-template-columns: 1fr; }
+    .sidebar { order: 2; }
+  }
+
+  .header {
+    grid-column: 1 / -1;
+    background: white;
+    border-radius: 12px;
+    padding: 20px 24px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    margin-bottom: 4px;
+  }
+  .header h1 {
+    font-size: 20px;
+    color: #1a4480;
+  }
+
+  .main {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    min-height: 600px;
+  }
+
+  .persona-card {
+    background: linear-gradient(135deg, #1a4480 0%, #2c5aa0 100%);
+    color: white;
+    padding: 24px;
+    border-radius: 10px;
+    margin-bottom: 24px;
+  }
+  .persona-card h2 {
+    font-size: 22px;
+    margin-bottom: 12px;
+  }
+  .persona-card .briefing {
+    font-size: 14px;
+    line-height: 1.6;
+    background: rgba(255,255,255,0.1);
+    padding: 14px;
+    border-radius: 6px;
+  }
+  .persona-card .briefing strong {
+    display: block;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    opacity: 0.85;
+  }
+
+  .turn {
+    margin-bottom: 18px;
+    animation: fadeIn 0.4s ease;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .speaker {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+  }
+  .turn.ae .speaker { color: #1a4480; }
+  .turn.pro .speaker { color: #2d8659; }
+  .bubble {
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-size: 14px;
+    max-width: 90%;
+  }
+  .turn.ae .bubble {
+    background: #eef4ff;
+    border-left: 3px solid #1a4480;
+    margin-left: auto;
+  }
+  .turn.pro .bubble {
+    background: #f0f9f4;
+    border-left: 3px solid #2d8659;
+  }
+
+  .coaching {
+    background: #fef9e7;
+    border-left: 3px solid #d4a017;
+    padding: 12px 16px;
+    margin: 12px 0;
+    border-radius: 6px;
+    font-size: 13px;
+    color: #5a4500;
+    animation: fadeIn 0.4s ease;
+  }
+  .coaching strong {
+    display: block;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+  }
+
+  .retry-banner {
+    background: #fff3e6;
+    border: 1.5px solid #d4641a;
+    color: #6a3a14;
+    padding: 12px 14px;
+    margin: 8px 0;
+    border-radius: 6px;
+    font-size: 13px;
+  }
+  .retry-banner strong {
+    display: block;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+  }
+
+  .decision { margin: 20px 0; }
+  .decision .prompt {
+    font-size: 13px;
+    font-weight: 600;
+    color: #444;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .option {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: white;
+    border: 1.5px solid #d1d9e6;
+    padding: 14px 16px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #1a1a1a;
+    transition: all 0.15s ease;
+    font-family: inherit;
+    line-height: 1.5;
+  }
+  .option:hover {
+    border-color: #1a4480;
+    background: #f8faff;
+  }
+  .option:disabled {
+    cursor: default;
+    opacity: 0.5;
+  }
+
+  .text-input-block {
+    margin: 20px 0;
+    background: #f8faff;
+    border: 1.5px solid #d1d9e6;
+    border-radius: 10px;
+    padding: 16px;
+  }
+  .text-input-block .prompt {
+    font-size: 13px;
+    font-weight: 600;
+    color: #444;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .text-input-block .helper {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 10px;
+    line-height: 1.5;
+  }
+  .text-input-block textarea {
+    width: 100%;
+    min-height: 100px;
+    padding: 12px 14px;
+    border: 1.5px solid #d1d9e6;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 14px;
+    resize: vertical;
+    background: white;
+  }
+  .text-input-block textarea:focus {
+    outline: none;
+    border-color: #1a4480;
+  }
+  .input-error {
+    color: #c43c3c;
+    font-size: 13px;
+    margin-top: 8px;
+    display: none;
+  }
+  .input-error.show { display: block; }
+  .submit-btn {
+    background: #1a4480;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 12px;
+    font-family: inherit;
+  }
+  .submit-btn:hover { background: #2c5aa0; }
+  .submit-btn:disabled { background: #999; cursor: default; }
+  .input-tip {
+    font-size: 12px;
+    color: #888;
+    margin-top: 6px;
+    font-style: italic;
+  }
+
+  .processing {
+    text-align: center;
+    padding: 16px;
+    color: #666;
+    font-size: 14px;
+    font-style: italic;
+  }
+
+  .continue-btn {
+    background: #1a4480;
+    color: white;
+    border: none;
+    padding: 14px 32px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    margin: 20px auto;
+    display: block;
+    font-family: inherit;
+    box-shadow: 0 2px 8px rgba(26, 68, 128, 0.2);
+  }
+  .continue-btn:hover {
+    background: #2c5aa0;
+    transform: translateY(-1px);
+  }
+
+  .sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .panel {
+    background: white;
+    border-radius: 10px;
+    padding: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    font-size: 13px;
+  }
+  .panel h3 {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #1a4480;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #e5e9ef;
+  }
+  .resource-link {
+    display: block;
+    padding: 10px 12px;
+    background: #f8faff;
+    border: 1px solid #e5e9ef;
+    border-radius: 6px;
+    text-decoration: none;
+    color: #1a4480;
+    font-weight: 600;
+    font-size: 13px;
+    margin-bottom: 6px;
+    transition: all 0.15s ease;
+    cursor: pointer;
+  }
+  .resource-link:hover {
+    background: #eef4ff;
+    border-color: #1a4480;
+  }
+  .resource-link .arrow { float: right; }
+  .resource-note {
+    font-size: 11px;
+    color: #888;
+    margin-bottom: 10px;
+    line-height: 1.4;
+  }
+  .ka-mention {
+    background: #f5f5f5;
+    border-left: 3px solid #999;
+    padding: 8px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    color: #555;
+    margin-top: 4px;
+  }
+  .ka-mention strong { color: #333; }
+
+  .modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.2s ease;
+    padding: 20px;
+  }
+  .dashboard-modal {
+    background: white;
+    border-radius: 8px;
+    max-width: 720px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: fadeIn 0.3s ease;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.2);
+  }
+  .dashboard-toolbar {
+    background: #2c2c2c;
+    color: white;
+    padding: 8px 16px;
+    font-size: 12px;
+    border-radius: 8px 8px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .dashboard-toolbar .practice-tag {
+    background: #d4a017;
+    color: #2c2c2c;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 10px;
+    letter-spacing: 0.5px;
+  }
+  .dashboard-tabs {
+    background: #f0f0f0;
+    padding: 8px 16px;
+    border-bottom: 1px solid #ddd;
+    font-size: 12px;
+    color: #555;
+  }
+  .dashboard-tabs span {
+    background: white;
+    padding: 4px 10px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    margin-right: 4px;
+  }
+  .dashboard-tabs span.active {
+    background: #1a4480;
+    color: white;
+    border-color: #1a4480;
+  }
+  .dashboard-body { padding: 24px; }
+  .dashboard-title {
+    font-size: 22px;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 4px;
+    color: #1a1a1a;
+  }
+  .dashboard-filters {
+    background: #f8faff;
+    border: 1px solid #e5e9ef;
+    border-radius: 4px;
+    padding: 10px 12px;
+    font-size: 12px;
+    margin-bottom: 16px;
+  }
+  .dashboard-filters .filter-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px;
+  }
+  .dashboard-filters .filter-row:last-child { margin-bottom: 0; }
+  .dashboard-filters .label { color: #666; }
+  .dashboard-filters .value { font-weight: 600; color: #1a4480; }
+  .dashboard-section-title {
+    font-size: 16px;
+    font-weight: 600;
+    text-align: center;
+    margin: 18px 0 6px;
+    color: #1a1a1a;
+  }
+  .dashboard-blurb {
+    font-size: 11px;
+    color: #777;
+    text-align: center;
+    font-style: italic;
+    margin-bottom: 12px;
+    line-height: 1.5;
+    padding: 0 16px;
+  }
+  .metric-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .metric-row.lead-cost {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .metric-cell {
+    background: #f0f4fa;
+    border: 1px solid #d1d9e6;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .metric-cell .label {
+    background: #2c5aa0;
+    color: white;
+    padding: 8px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    text-align: center;
+    line-height: 1.3;
+  }
+  .metric-cell .value {
+    padding: 18px 8px;
+    text-align: center;
+    font-size: 22px;
+    font-weight: 700;
+    color: #1a1a1a;
+  }
+  .metric-cell .sub-values {
+    padding: 12px 12px;
+    font-size: 13px;
+    color: #1a1a1a;
+  }
+  .metric-cell .sub-values .sub-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+  }
+  .metric-cell .sub-values .sub-label {
+    color: #555;
+    font-weight: 500;
+  }
+  .metric-cell .sub-values .sub-val {
+    font-weight: 700;
+    color: #1a1a1a;
+  }
+  .related-categories {
+    background: #f0f4fa;
+    border: 1px solid #d1d9e6;
+    border-radius: 4px;
+    padding: 12px;
+    margin-bottom: 16px;
+  }
+  .related-categories .rc-title {
+    background: #2c5aa0;
+    color: white;
+    padding: 6px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    margin: -12px -12px 10px;
+    border-radius: 4px 4px 0 0;
+    text-align: center;
+  }
+  .rc-bar {
+    display: flex;
+    align-items: center;
+    margin-bottom: 4px;
+    font-size: 11px;
+  }
+  .rc-bar .rc-name {
+    width: 130px;
+    color: #555;
+  }
+  .rc-bar .rc-fill {
+    background: #6b9ee0;
+    height: 14px;
+    color: white;
+    text-align: right;
+    padding-right: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    line-height: 14px;
+    border-radius: 0 2px 2px 0;
+  }
+  .reminder-box {
+    background: #fef9e7;
+    border: 1.5px solid #d4a017;
+    padding: 12px 14px;
+    border-radius: 6px;
+    font-size: 12px;
+    color: #5a4500;
+    line-height: 1.5;
+    margin-top: 16px;
+  }
+  .reminder-box strong {
+    display: block;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+  }
+  .close-btn {
+    background: #1a4480;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 16px;
+    width: 100%;
+    font-family: inherit;
+  }
+
+  /* Transcript review modal */
+  .transcript-modal {
+    background: white;
+    border-radius: 12px;
+    max-width: 720px;
+    width: 100%;
+    max-height: 85vh;
+    overflow-y: auto;
+    animation: fadeIn 0.3s ease;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.2);
+    padding: 24px;
+  }
+  .transcript-modal h2 {
+    color: #1a4480;
+    font-size: 20px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #e5e9ef;
+  }
+  .transcript-modal .turn {
+    margin-bottom: 14px;
+  }
+
+  .strikes {
+    display: flex;
+    gap: 6px;
+    margin-top: 8px;
+    align-items: center;
+  }
+  .strike-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #e5e9ef;
+    transition: background 0.3s ease;
+  }
+  .strike-dot.warn { background: #d4a017; }
+  .strike-dot.fail { background: #c43c3c; }
+  .strike-label {
+    font-size: 11px;
+    color: #666;
+    margin-left: 6px;
+  }
+
+  .rubric-criterion {
+    padding: 8px 0;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 12px;
+  }
+  .rubric-criterion:last-child { border-bottom: none; }
+  .rubric-criterion .check {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #e5e9ef;
+    margin-right: 6px;
+    vertical-align: middle;
+    text-align: center;
+    line-height: 16px;
+    font-size: 10px;
+    color: white;
+    font-weight: bold;
+  }
+  .rubric-criterion.passed .check { background: #2d8659; }
+  .rubric-criterion.failed .check { background: #c43c3c; }
+
+  .scorecard {
+    text-align: center;
+    padding: 30px 20px;
+  }
+  .scorecard h2 {
+    color: #1a4480;
+    font-size: 26px;
+    margin-bottom: 8px;
+  }
+  .scorecard.failed h2 { color: #c43c3c; }
+  .scorecard .score {
+    font-size: 56px;
+    font-weight: bold;
+    color: #2d8659;
+    margin: 16px 0;
+  }
+  .scorecard .score.partial { color: #d4a017; }
+  .scorecard .score.low { color: #c43c3c; }
+  .scorecard-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .scorecard-actions button {
+    padding: 10px 18px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    border: 1.5px solid #1a4480;
+  }
+  .scorecard-actions .review-btn {
+    background: white;
+    color: #1a4480;
+  }
+  .scorecard-actions .review-btn:hover { background: #eef4ff; }
+  .breakdown {
+    text-align: left;
+    margin: 24px 0;
+    background: #f8faff;
+    padding: 20px;
+    border-radius: 10px;
+  }
+  .breakdown h3 {
+    font-size: 14px;
+    text-transform: uppercase;
+    color: #1a4480;
+    margin-bottom: 12px;
+    letter-spacing: 0.5px;
+  }
+  .breakdown-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 12px;
+    font-size: 14px;
+  }
+  .breakdown-item .icon {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 22px;
+    color: white;
+    font-weight: bold;
+    font-size: 12px;
+  }
+  .breakdown-item.pass .icon { background: #2d8659; }
+  .breakdown-item.fail .icon { background: #c43c3c; }
+  .breakdown-item .text { flex: 1; }
+  .breakdown-item .text strong { display: block; margin-bottom: 2px; }
+  .breakdown-item .text span { color: #555; font-size: 13px; }
+
+  .manager-feedback {
+    background: white;
+    border: 2px solid #1a4480;
+    border-radius: 12px;
+    padding: 24px;
+    margin-top: 20px;
+    text-align: left;
+  }
+  .manager-feedback h3 {
+    color: #1a4480;
+    font-size: 18px;
+    margin-bottom: 8px;
+  }
+  .manager-feedback .helper {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 14px;
+    line-height: 1.5;
+  }
+  .manager-feedback label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    margin-top: 14px;
+    margin-bottom: 6px;
+    color: #444;
+  }
+  .manager-feedback input,
+  .manager-feedback textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1.5px solid #d1d9e6;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 14px;
+  }
+  .manager-feedback textarea {
+    min-height: 80px;
+    resize: vertical;
+  }
+  .copy-btn {
+    background: #1a4480;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 18px;
+    width: 100%;
+    font-family: inherit;
+  }
+  .copy-btn:hover { background: #2c5aa0; }
+  .copy-confirm {
+    display: none;
+    background: #f0f9f4;
+    border-left: 3px solid #2d8659;
+    padding: 10px 14px;
+    margin-top: 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    color: #1f5e3e;
+  }
+  .copy-confirm.show { display: block; }
+  .slack-instructions {
+    background: #f8faff;
+    border-left: 3px solid #1a4480;
+    padding: 10px 14px;
+    margin-top: 14px;
+    border-radius: 6px;
+    font-size: 12px;
+    color: #444;
+    line-height: 1.5;
+  }
+
+  .replay-btn {
+    background: white;
+    color: #1a4480;
+    border: 1.5px solid #1a4480;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 16px;
+    font-family: inherit;
+  }
+  .replay-btn:hover { background: #eef4ff; }
+
+  .job-aids {
+    background: #f0f9f4;
+    border-radius: 8px;
+    padding: 14px;
+    margin-top: 16px;
+    text-align: left;
+  }
+  .job-aids h4 {
+    font-size: 13px;
+    color: #1a4480;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .job-aids ul {
+    list-style: none;
+    font-size: 13px;
+    line-height: 1.8;
+  }
+  .job-aids li::before {
+    content: "📄 ";
+    margin-right: 4px;
+  }
+
+  .fail-banner {
+    background: #fbe9e9;
+    border: 2px solid #c43c3c;
+    color: #8a2828;
+    padding: 16px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    font-size: 14px;
+  }
+  .fail-banner strong {
+    display: block;
+    font-size: 16px;
+    margin-bottom: 4px;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <div class="header">
+    <h1>Beyond the Checklist: Diagnostic Discovery</h1>
+  </div>
+
+  <div class="main" id="main"></div>
+
+  <div class="sidebar">
+
+    <div class="panel">
+      <h3>🛠️ Your Tools</h3>
+
+      <a class="resource-link" onclick="openMegaDashboard(); return false;">
+        Mega Dashboard <span class="arrow">→</span>
+      </a>
+      <div class="resource-note">Sales Market Data Dashboard. Click to look up Linda's market.</div>
+
+      <a class="resource-link" href="https://coda.io/d/Sales-Playbook_d8loQcMO5pL/SALES-PLAYBOOK_suWjzjPw?docIds%5B0%5D=8loQcMO5pL&search=tableau#_luedofwY" target="_blank" rel="noopener">
+        Sales Playbook <span class="arrow">↗</span>
+      </a>
+      <div class="resource-note">Coda playbook. Reference for package details, SLAs, and Demand Guarantee.</div>
+
+      <div class="ka-mention">
+        <strong>Also available:</strong> Sales Prepaid Packages Knowledge Article
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>🎯 Call Status</h3>
+      <div style="font-size: 12px; color: #666; margin-bottom: 4px;">Misstep tracker</div>
+      <div class="strikes">
+        <div class="strike-dot" id="strike-1"></div>
+        <div class="strike-dot" id="strike-2"></div>
+        <div class="strike-dot" id="strike-3"></div>
+        <span class="strike-label">3 missteps = call ends</span>
+      </div>
+      <div style="height: 12px;"></div>
+      <div class="rubric-criterion" id="rubric-1">
+        <span class="check">·</span> Layered follow-up questions
+      </div>
+      <div class="rubric-criterion" id="rubric-2">
+        <span class="check">·</span> Surface what went wrong last time
+      </div>
+      <div class="rubric-criterion" id="rubric-3">
+        <span class="check">·</span> Re-engagement framed using market averages
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+'use strict';
+
+const persona = {
+  name: "Linda Thompson",
+  category: "Handyman",
+  briefing: {
+    "What you know": "Her name, phone number, and that she's a handyman pro who signed up about 6 months ago. She paid for some leads, used the site for about a week, then stopped logging in. She's in the Dormant queue (180+ days inactive).",
+    "What you don't know": "Why she went quiet. What her business actually looks like now. Whether she's open to coming back, or whether she's already written off the platform. You'll learn it through discovery — or you won't.",
+    "Your goal": "Run a diagnostic discovery conversation. Surface what went wrong last time. Introduce the right package using HER words — describe it by features (don't use internal labels like 'dormant' out loud). Frame the re-engagement using Mega Dashboard market averages."
+  }
+};
+
+const state = {
+  followUpsAsked: 0,
+  shallowChoicesMade: 0,
+  missteps: 0,
+  packageRecommended: null,
+  packageJustifiedFromDiscovery: false,
+  packageRetried: false,
+  packageUsedDormantLabel: false,
+  surfacedWhatWentWrong: false,
+  roiUsedMarketAverages: false,
+  roiQuotedExactPrice: false,
+  roiRetried: false,
+  failed: false,
+  // Track which paths Turn 3 took, to avoid the duplicate Turn 4 question
+  turn3Path: null, // 'layered' | 'asked-source' | 'future-projection'
+  // Full transcript for review
+  transcript: [],
+  // Capture AE's typed responses for manager review (when AE chooses to share)
+  packageResponseText: null,
+  roiResponseText: null
+};
+
+const main = document.getElementById('main');
+
+function renderIntro() {
+  main.innerHTML = `
+    <div class="persona-card">
+      <h2>${persona.name} — ${persona.category}</h2>
+      <div class="briefing">
+        ${Object.entries(persona.briefing).map(([k, v]) => `<strong>${k}</strong>${v}`).join('<br><br>')}
+      </div>
+    </div>
+    <div class="decision">
+      <div class="prompt">Ready to begin?</div>
+      <button class="option" onclick="startCall()">Start the call</button>
+    </div>
+  `;
+}
+
+function addTurn(speaker, text) {
+  const isAE = speaker === 'ae';
+  state.transcript.push({ speaker, text });
+  const div = document.createElement('div');
+  div.className = `turn ${speaker}`;
+  div.innerHTML = `
+    <div class="speaker">${isAE ? 'You (AE)' : persona.name}</div>
+    <div class="bubble"></div>
+  `;
+  div.querySelector('.bubble').textContent = text;
+  main.appendChild(div);
+  div.scrollIntoView({ behavior: 'smooth', block: 'end' });
+}
+
+function addCoaching(text) {
+  const div = document.createElement('div');
+  div.className = 'coaching';
+  const strong = document.createElement('strong');
+  strong.textContent = '💡 Coaching';
+  div.appendChild(strong);
+  const span = document.createElement('span');
+  span.textContent = text;
+  div.appendChild(span);
+  main.appendChild(div);
+  div.scrollIntoView({ behavior: 'smooth', block: 'end' });
+}
+
+function addRetryBanner(message) {
+  const div = document.createElement('div');
+  div.className = 'retry-banner';
+  div.innerHTML = `<strong>⟲ Try again</strong>${message}`;
+  main.appendChild(div);
+  div.scrollIntoView({ behavior: 'smooth', block: 'end' });
+}
+
+function recordMisstep() {
+  state.missteps++;
+  state.shallowChoicesMade++;
+  for (let i = 1; i <= 3; i++) {
+    const dot = document.getElementById(`strike-${i}`);
+    if (dot && i <= state.missteps) {
+      dot.className = state.missteps >= 3 ? 'strike-dot fail' : 'strike-dot warn';
+    }
+  }
+  return state.missteps >= 3;
+}
+
+function showOptions(prompt, options) {
+  const div = document.createElement('div');
+  div.className = 'decision';
+  const promptEl = document.createElement('div');
+  promptEl.className = 'prompt';
+  promptEl.textContent = prompt;
+  div.appendChild(promptEl);
+
+  options.forEach((opt) => {
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.textContent = opt.text;
+    btn.onclick = () => {
+      div.querySelectorAll('button').forEach(b => b.disabled = true);
+      btn.style.borderColor = '#1a4480';
+      btn.style.background = '#eef4ff';
+      addTurn('ae', opt.text);
+
+      if (opt.quality === 'good') {
+        state.followUpsAsked += (opt.weight || 1);
+      } else if (opt.quality === 'bad') {
+        const failed = recordMisstep();
+        if (failed) {
+          setTimeout(() => triggerCallEnd(opt.failResponse || "I don't have time for this. I have to go.", opt.coaching), 800);
+          return;
+        }
+      }
+
+      if (opt.coaching) {
+        setTimeout(() => addCoaching(opt.coaching), 400);
+        setTimeout(() => opt.next(), 1200);
+      } else {
+        setTimeout(() => opt.next(), 600);
+      }
+    };
+    div.appendChild(btn);
+  });
+  main.appendChild(div);
+  div.scrollIntoView({ behavior: 'smooth', block: 'end' });
+}
+
+function showTextInput(promptText, helperText, onSubmit, allowRetry) {
+  const wrapper = document.createElement('div');
+  wrapper.className = 'text-input-block';
+
+  const promptDiv = document.createElement('div');
+  promptDiv.className = 'prompt';
+  promptDiv.textContent = promptText;
+  wrapper.appendChild(promptDiv);
+
+  const helperDiv = document.createElement('div');
+  helperDiv.className = 'helper';
+  helperDiv.textContent = helperText;
+  wrapper.appendChild(helperDiv);
+
+  const textarea = document.createElement('textarea');
+  textarea.placeholder = 'Type your response...';
+  wrapper.appendChild(textarea);
+
+  const errorDiv = document.createElement('div');
+  errorDiv.className = 'input-error';
+  wrapper.appendChild(errorDiv);
+
+  const tipDiv = document.createElement('div');
+  tipDiv.className = 'input-tip';
+  tipDiv.textContent = 'Tip: Press Ctrl+Enter (Cmd+Enter on Mac) to submit, or click the button below.';
+  wrapper.appendChild(tipDiv);
+
+  const submitBtn = document.createElement('button');
+  submitBtn.className = 'submit-btn';
+  submitBtn.textContent = 'Submit';
+  submitBtn.type = 'button';
+  wrapper.appendChild(submitBtn);
+
+  main.appendChild(wrapper);
+  wrapper.scrollIntoView({ behavior: 'smooth', block: 'end' });
+  setTimeout(() => textarea.focus(), 100);
+
+  let submitted = false;
+
+  function doSubmit() {
+    if (submitted) return;
+    const val = textarea.value.trim();
+
+    if (val.length < 5) {
+      errorDiv.textContent = 'Please write a more complete response (at least a sentence).';
+      errorDiv.classList.add('show');
+      textarea.focus();
+      return;
+    }
+
+    submitted = true;
+    errorDiv.classList.remove('show');
+    textarea.disabled = true;
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitted ✓';
+    addTurn('ae', val);
+
+    const processing = document.createElement('div');
+    processing.className = 'processing';
+    processing.textContent = 'Linda is responding...';
+    main.appendChild(processing);
+    processing.scrollIntoView({ behavior: 'smooth', block: 'end' });
+
+    setTimeout(() => {
+      try {
+        processing.remove();
+        onSubmit(val);
+      } catch (err) {
+        console.error('Handler error:', err);
+        processing.remove();
+        addCoaching('Something went wrong, but the call continues. Moving on...');
+        setTimeout(() => {
+          if (typeof window.__nextAfterError === 'function') {
+            window.__nextAfterError();
+          } else {
+            showScorecard();
+          }
+        }, 1500);
+      }
+    }, 1000);
+  }
+
+  submitBtn.onclick = doSubmit;
+  textarea.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+      e.preventDefault();
+      doSubmit();
+    }
+  });
+}
+
+function updateRubric(id, passed) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.classList.add(passed ? 'passed' : 'failed');
+  el.querySelector('.check').textContent = passed ? '✓' : '✗';
+}
+
+function triggerCallEnd(proLine, coachingNote) {
+  state.failed = true;
+  addTurn('pro', proLine);
+  setTimeout(() => {
+    if (coachingNote) addCoaching(coachingNote);
+    setTimeout(showFailScorecard, 1500);
+  }, 1000);
+}
+
+function openMegaDashboard() {
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.innerHTML = `
+    <div class="dashboard-modal">
+      <div class="dashboard-toolbar">
+        <span>Tableau · Sales Market Data Dashboard</span>
+        <span class="practice-tag">PRACTICE MODE</span>
+      </div>
+      <div class="dashboard-tabs">
+        <span class="active">Sales Market Data Dashboard</span>
+        <span>AVG Pros per Search in the last...</span>
+        <span>Total Searches in the market in...</span>
+      </div>
+      <div class="dashboard-body">
+        <div class="dashboard-title">Sales Market Data Dashboard</div>
+        <div class="dashboard-filters">
+          <div class="filter-row"><span class="label">Category</span><span class="value">Handyman</span></div>
+          <div class="filter-row"><span class="label">CBSA</span><span class="value">Mid-size Metro</span></div>
+          <div class="filter-row"><span class="label">City / State</span><span class="value">(Linda's market)</span></div>
+        </div>
+        <div class="dashboard-section-title">Market Landscape</div>
+        <div class="dashboard-blurb">In the past month we have just over 4,128 people reaching out to pros for Handyman work in this market. On average 19.43 pros are showing up in search results.</div>
+        <div class="metric-row">
+          <div class="metric-cell"><div class="label">Total Searches in the market in the last 30 days</div><div class="value">8,316</div></div>
+          <div class="metric-cell"><div class="label">Number of Leads in the past 30 days</div><div class="value">4,128</div></div>
+          <div class="metric-cell"><div class="label">AVG Pros per Search in the last 30 days</div><div class="value">19.43</div></div>
+          <div class="metric-cell"><div class="label">AVG Pro Response Time (hours) last 30 days</div><div class="value">1.27</div></div>
+        </div>
+        <div class="dashboard-section-title">Lead Cost</div>
+        <div class="dashboard-blurb">The majority of leads will cost between $22 and $34. The average cost for a lead in this market in the last 30 days was $28.</div>
+        <div class="metric-row lead-cost">
+          <div class="metric-cell"><div class="label">Minimum Lead Cost in the past 30 days</div><div class="value">$22.00</div></div>
+          <div class="metric-cell"><div class="label">Average Lead Cost in the past 30 days</div><div class="value">$28.00</div></div>
+          <div class="metric-cell"><div class="label">Maximum Lead Cost in the past 30 days</div><div class="sub-values"><div class="sub-row"><span class="sub-label">Typical Max:</span><span class="sub-val">$34.00</span></div><div class="sub-row"><span class="sub-label">Absolute Max:</span><span class="sub-val">$112.00</span></div></div></div>
+        </div>
+        <div class="dashboard-section-title">Top Related Categories</div>
+        <div class="dashboard-blurb">How much more likely a pro in Handyman is to also target one of the listed related categories.</div>
+        <div class="related-categories">
+          <div class="rc-title">Related Categories</div>
+          <div class="rc-bar"><div class="rc-name">Furniture Assembly</div><div class="rc-fill" style="width: 68%;">8.31</div></div>
+          <div class="rc-bar"><div class="rc-name">Drywall Repair</div><div class="rc-fill" style="width: 59%;">7.21</div></div>
+          <div class="rc-bar"><div class="rc-name">Fence Repair</div><div class="rc-fill" style="width: 53%;">6.48</div></div>
+          <div class="rc-bar"><div class="rc-name">Door Repair</div><div class="rc-fill" style="width: 47%;">5.73</div></div>
+          <div class="rc-bar"><div class="rc-name">TV Mounting</div><div class="rc-fill" style="width: 43%;">5.26</div></div>
+          <div class="rc-bar"><div class="rc-name">Light Fixture Install</div><div class="rc-fill" style="width: 38%;">4.62</div></div>
+        </div>
+        <div class="reminder-box">
+          <strong>⚠️ Reminder</strong>
+          These are 30-day market averages, not exact quotes. Pricing varies weekly by category, zip code, and demand. Exact prices come after the pro sets up their account. Frame everything to the pro as a range.
+        </div>
+        <button class="close-btn" onclick="closeMegaDashboard()">Close Dashboard</button>
+      </div>
+    </div>
+  `;
+  overlay.onclick = (e) => {
+    if (e.target === overlay) closeMegaDashboard();
+  };
+  document.body.appendChild(overlay);
+}
+
+function closeMegaDashboard() {
+  const overlay = document.querySelector('.modal-overlay');
+  if (overlay) overlay.remove();
+}
+
+// ============================================================
+// CONVERSATION FLOW
+// ============================================================
+
+function startCall() {
+  main.innerHTML = '';
+  state.transcript = [];
+  addTurn('ae', "Hi, is this Linda?");
+  setTimeout(() => {
+    addTurn('pro', "This is Linda. Who's calling?");
+    setTimeout(() => {
+      addTurn('ae', "Hi Linda, this is [Your Name] with Thumbtack, calling on a recorded line for quality and training purposes too. I see you've been with us for a while — do you have a few minutes to chat?");
+      setTimeout(() => {
+        addTurn('pro', "Thumbtack? Honestly, I tried it for about a week maybe six months back and it didn't work out for me. What's this about?");
+        setTimeout(turn1, 1200);
+      }, 1500);
+    }, 1500);
+  }, 800);
+}
+
+function turn1() {
+  showOptions("Linda just told you she had a bad experience before. How do you start the conversation?", [
+    {
+      text: "I hear that a lot from pros who tried us a while back — but a lot has changed since then. We've made some big improvements. Would you be open to taking a fresh look at what we offer now?",
+      quality: 'bad',
+      coaching: "This dismisses Linda's experience without engaging it. 'A lot has changed since then' is the exact phrase pros remember as code for 'I'm not actually going to listen to you.' She's already burned — telling her things are different doesn't make her trust you, it makes her trust you less. The strongest move is to ASK what didn't work, not assert that it's been fixed.",
+      failResponse: "Look, I've heard that before. I don't really have time for a sales pitch today. Thanks for calling.",
+      next: () => {
+        setTimeout(() => {
+          addTurn('pro', "Hmm. Okay, I guess. What did you want to talk about?");
+          setTimeout(turn2, 1200);
+        }, 600);
+      }
+    },
+    {
+      text: "I appreciate you being upfront about that. Before I tell you anything about Thumbtack today, I'd love to understand your business a bit and what hasn't been working. Would it be okay if I asked you a few questions first?",
+      quality: 'good',
+      weight: 1,
+      next: () => {
+        setTimeout(() => {
+          addTurn('pro', "I guess. Go ahead.");
+          setTimeout(turn2, 1200);
+        }, 600);
+      }
+    },
+    {
+      text: "I understand. Look, I just want to walk you through some of the new packages we have for handyman pros — there might be something that fits better than what you tried before. Mind if I ask a few questions to figure out which one is right?",
+      quality: 'bad',
+      coaching: "This pre-frames the conversation around 'packages we have' before Linda has said a word about her current business. She's already skeptical, and now she's hearing what sounds like a pitch wrapped in qualifying questions. The moment she hears 'walk you through packages,' she's mentally already off the call. Earn the conversation FIRST.",
+      failResponse: "Yeah, I really don't think Thumbtack's right for me. I appreciate the call but I'm going to pass.",
+      next: () => {
+        setTimeout(() => {
+          addTurn('pro', "I mean, I guess so. What did you want to know?");
+          setTimeout(turn2, 1200);
+        }, 600);
+      }
+    }
+  ]);
+}
+
+function turn2() {
+  showOptions("Linda's open. What's your first discovery question?", [
+    {
+      text: "How long have you been doing handyman work?",
+      quality: 'neutral',
+      next: () => {
+        setTimeout(() => {
+          addTurn('pro', "Going on nine years. I've been doing this a long time.");
+          setTimeout(() => {
+            addTurn('ae', "Okay, can you tell me more about how it's set up?");
+            setTimeout(() => {
+              addTurn('pro', "It's me and one helper. We do mostly residential — small repairs, drywall, fence work, things people don't want to tackle themselves. Most of my work comes from longtime customers and word-of-mouth.");
+              setTimeout(turn3, 1500);
+            }, 1500);
+          }, 1200);
+        }, 600);
+      }
+    },
+    {
+      text: "Tell me a bit about your handyman business — how long have you been doing it, and what does it look like right now?",
+      quality: 'good',
+      weight: 1,
+      next: () => {
+        setTimeout(() => {
+          addTurn('pro', "I've been doing handyman work for about nine years now. It's me and one helper. We mostly do residential — small repairs, drywall, fence work, things people don't want to tackle themselves. Most of my work comes from longtime customers and word-of-mouth referrals.");
+          setTimeout(turn3, 1500);
+        }, 600);
+      }
+    },
+    {
+      text: "Can you remind me what didn't work for you on Thumbtack last time? I want to make sure we don't repeat that.",
+      quality: 'bad',
+      coaching: "This isn't a bad question, but it's the WRONG first question. Linda just told you she had a bad experience and she has armor up. Leading with 'tell me what went wrong' before she's even told you about her business makes the whole call feel like a complaint review, not a real conversation. Get her talking about her business — something she's proud of — first. THEN earn the right to ask about what didn't work.",
+      failResponse: "Honestly, I'd rather not get into all that. It's water under the bridge. Look, I should probably get back to my day.",
+      next: () => {
+        setTimeout(() => {
+          addTurn('pro', "I mean... I just didn't get the leads I expected. I don't really want to relive it.");
+          setTimeout(turn3, 1200);
+        }, 600);
+      }
+    }
+  ]);
+}
+
+function turn3() {
+  showOptions("Linda mentioned 'longtime customers and word-of-mouth.' What's your move?", [
+    {
+      // CORRECT: layered - acknowledges what she has AND probes for change
+      text: "Nine years and a steady word-of-mouth book — that's a real business. What does a typical month look like volume-wise, and has the work been steady or has anything been shifting?",
+      quality: 'good',
+      weight: 2,
+      next: () => {
+        state.turn3Path = 'layered';
+        setTimeout(() => {
+          addTurn('pro', "Volume's actually been okay, but honestly... it's slowly shrinking. I had a really solid base of customers I'd been working with for years. But over the last couple of years, I've had folks retire and move down to Florida, kids moved them into senior living, that kind of thing. I'm losing maybe one or two regular customers a year, and I'm not really replacing them. I haven't been worried about it because I've been busy enough, but if this keeps up, I'm going to have a problem.");
+          setTimeout(turn4, 1500);
+        }, 600);
+      }
+    },
+    {
+      // NEUTRAL: customer mix
+      text: "Got it. So how are most of these customers finding you?",
+      quality: 'neutral',
+      next: () => {
+        state.turn3Path = 'asked-source';
+        setTimeout(() => {
+          addTurn('pro', "Mostly word of mouth. Some of these folks I've been working with for 5, 6 years. Their neighbors hire me, their kids hire me when they buy a place. It's been a good system.");
+          setTimeout(turn4, 1200);
+        }, 600);
+      }
+    },
+    {
+      // BAD: future projection
+      text: "Are you looking to grow into a bigger operation, or are you happy with the size you're at now?",
+      quality: 'bad',
+      coaching: "This is a yes/no that asks Linda to project to the FUTURE before describing her PRESENT. You haven't learned what 'longtime customers and word-of-mouth' looks like in practice or whether anything is shifting. Layered discovery learns the present before asking about the future.",
+      failResponse: "I'm fine where I'm at. Look, I really don't think I have time for this today, sorry.",
+      next: () => {
+        state.turn3Path = 'future-projection';
+        setTimeout(() => {
+          addTurn('pro', "I'm not really looking to grow. I just want to keep doing what I'm doing.");
+          setTimeout(turn4, 1200);
+        }, 600);
+      }
+    }
+  ]);
+}
+
+// Turn 4 branches based on what was asked in Turn 3
+function turn4() {
+  if (state.turn3Path === 'layered') {
+    // Linda already shared the declining client base - go straight to Turn 5
+    setTimeout(turn5, 800);
+  } else if (state.turn3Path === 'asked-source') {
+    // AE asked about source - now ask about whether anything is shifting
+    setTimeout(() => {
+      addTurn('ae', "And has the work been steady, or has anything been shifting lately?");
+      setTimeout(() => {
+        addTurn('pro', "Honestly... it's been slowly shrinking. Over the last couple of years, I've had longtime customers retire, move down to Florida, kids move them into senior living. I'm losing maybe one or two regular customers a year and not really replacing them. I haven't been worried because I've been busy enough, but if this keeps up, I'm going to have a problem.");
+          setTimeout(turn5, 1500);
+      }, 1800);
+    }, 400);
+  } else {
+    // future-projection path - recover by asking about volume
+    setTimeout(() => {
+      addTurn('ae', "Got it. What does a typical month look like volume-wise these days?");
+      setTimeout(() => {
+        addTurn('pro', "Volume's been okay, but honestly... it's slowly shrinking. Longtime customers retiring, moving to Florida, kids moving them into senior living. I'm losing one or two a year and not really replacing them. Been busy enough I haven't worried about it, but if it keeps up, I'm going to have a problem.");
+        setTimeout(turn5, 1500);
+      }, 1800);
+    }, 400);
+  }
+}
+
+function turn5() {
+  showOptions("Linda's opened up about a real problem. What's your move?", [
+    {
+      text: "I want to come back to something you mentioned earlier — that your last experience with Thumbtack didn't work out. Can you walk me through what happened? I want to make sure I understand what didn't work for you specifically.",
+      quality: 'good',
+      weight: 2,
+      next: () => {
+        state.surfacedWhatWentWrong = true;
+        setTimeout(() => {
+          addTurn('pro', "Honestly? I signed up, I paid for some leads in the first week, and most of them didn't even respond when I reached out. The ones that did respond were either price-shopping or already had three other quotes. I felt like I was just throwing money at a slot machine. I had no idea what I was doing, and nobody really walked me through it. After a week I just stopped logging in.");
+          setTimeout(turn6, 1500);
+        }, 600);
+      }
+    },
+    {
+      text: "Things have actually changed a lot in the last 6 months — we've added new features that should help with the issues you ran into. Want me to walk you through what's new?",
+      quality: 'bad',
+      coaching: "This is the dismissive move. 'Things have changed' tells Linda you don't actually want to hear what went wrong — you just want to move past it and pitch. She's already been burned and now feels unheard. The strongest move is to ASK what specifically didn't work, not assert that it's been fixed.",
+      failResponse: "Yeah, I've heard that pitch before. Look, I really should get back to my day. Thanks for calling.",
+      next: () => {
+        setTimeout(() => {
+          addTurn('pro', "Maybe. I don't really want to do another sales pitch. I'd rather just move on.");
+          setTimeout(turn6, 1200);
+        }, 600);
+      }
+    },
+    {
+      text: "It sounds like what you really need is a steady way to replace those customers you're losing. Let me tell you about a package that might fit — it's specifically for pros in your situation.",
+      quality: 'bad',
+      coaching: "Linda gave you GOLD here — she just opened up about her shrinking client base, which is real vulnerability for a skeptic. Jumping to a package recommendation now skips the most important step: surfacing what specifically didn't work last time. If you don't engage that, the recommendation will land like every other sales pitch she's heard. The order matters: surface what went wrong, THEN recommend.",
+      failResponse: "I appreciate it, but I'm not really in the market for another package. I tried that route already.",
+      next: () => {
+        setTimeout(() => {
+          addTurn('pro', "I mean... maybe. But I've heard pitches like this before. I'm hesitant.");
+          setTimeout(turn6, 1200);
+        }, 600);
+      }
+    }
+  ]);
+}
+
+function turn6() {
+  setTimeout(() => {
+    addTurn('ae', "If we were talking a year from now, what would need to be true for you to feel really good about how the business is going?");
+    setTimeout(() => {
+      addTurn('pro', "Honestly? I'd just want to be replacing the customers I'm losing. I'd be happy keeping my volume steady — maybe finding 4 or 5 new long-term residential customers a year. That's enough to offset the ones who retire. I make about $200-$300 on a typical job, sometimes more. I don't need to grow huge. I just don't want to be slowly fading.");
+      setTimeout(turn7, 1800);
+    }, 1800);
+  }, 400);
+}
+
+function turn7() {
+  setTimeout(() => {
+    addTurn('ae', "Okay, let me make sure I've got this right. You've been doing handyman work for 9 years, you and one helper, mostly residential repair work, $200-$300 per job. Your client base is mostly word-of-mouth and longtime relationships, but you're slowly losing 1-2 regulars a year to retirement and relocation, and not replacing them. Your goal is to find 4-5 new long-term residential customers a year to offset those losses. And last time on Thumbtack, the leads weren't responding when you reached out, you weren't sure how to make it work, and nobody really walked you through it. Did I get all that right?");
+    setTimeout(() => {
+      addTurn('pro', "Yeah. That's pretty much it.");
+      setTimeout(turn8, 1500);
+    }, 2400);
+  }, 400);
+}
+
+// ============================================================
+// TURN 8 — Package recommendation with retry
+// ============================================================
+
+function turn8() {
+  window.__nextAfterError = turn9;
+  showTextInput(
+    "Introduce the right package for Linda",
+    "Linda qualifies for the Dormant Pro Package internally — but DON'T use that name out loud with her. Calling it the 'dormant' package signals to her that she's a failure who couldn't make it work. Instead, describe it by what it IS: $0 upfront, 30 days of AE support, no agreement to sign. Anchor it in her words — what she said about her experience, her concerns, and her goal. Reference at least one specific thing she said.",
+    handlePackageRecommendation
+  );
+}
+
+function handlePackageRecommendation(response) {
+  const r = response.toLowerCase();
+
+  // Capture for manager review (track latest response, including retries)
+  state.packageResponseText = response;
+
+  // CRITICAL: Check if AE used "dormant" label out loud — that's a misstep
+  const usedDormantLabel = /\bdormant\b/i.test(response);
+
+  // Detect package via FEATURES (the right way to describe it to Linda)
+  // The AE describes it correctly when they reference $0 upfront / no money / 30 days AE support / no agreement
+  let packageNamed = null;
+  const describesByFeatures = (
+    r.includes('$0') || r.includes('zero') || r.includes('no money') ||
+    r.includes('no upfront') || r.includes('nothing upfront') || r.includes('free') ||
+    r.includes('no cost') || r.includes('no risk') || r.includes('no commitment') ||
+    r.includes('no agreement') || r.includes('no charge') || r.includes('without paying')
+  );
+
+  if (describesByFeatures) {
+    packageNamed = 'Dormant Pro Package'; // internal classification
+  }
+  else if (r.includes('premium')) packageNamed = 'Premium';
+  else if (r.includes('plus')) packageNamed = 'Plus';
+  else if (r.includes('base')) packageNamed = 'Base';
+  else if (r.includes('enterprise')) packageNamed = 'Enterprise';
+  else if (usedDormantLabel) {
+    // Said "dormant" but didn't describe by features — still classifies as dormant package
+    // but will be flagged for the dormant-label misstep below
+    packageNamed = 'Dormant Pro Package';
+  }
+
+  // CASE 0: AE used the "dormant" label out loud — Linda reacts negatively, retry forced
+  if (usedDormantLabel && !state.packageRetried) {
+    state.packageRetried = true;
+    state.packageUsedDormantLabel = true;
+    addTurn('pro', "Wait — 'dormant pro package'? That's what you call this internally? Honestly, that doesn't make me feel any better about coming back. I already feel like I failed at this once.");
+    setTimeout(() => {
+      addRetryBanner("Big misstep — 'dormant' is internal Sales jargon. Linda hears it as 'package for failures.' Try again. Describe the package by what it IS for her — $0 upfront, 30 days of AE support, no agreement — not by what we call it.");
+      setTimeout(() => {
+        showTextInput(
+          "Introduce the right package for Linda (retry)",
+          "Don't say 'dormant' to Linda. Describe the package by what it does for her: $0 upfront, 30 days of one-on-one AE support, no agreement to sign. Anchor it in her experience and her goal — reference at least 2 things she said.",
+          handlePackageRecommendation
+        );
+      }, 800);
+    }, 1200);
+    return;
+  }
+
+  // CASE 0b: AE used "dormant" again on retry — record and advance with serious coaching
+  if (usedDormantLabel && state.packageRetried) {
+    state.packageRecommended = packageNamed;
+    state.packageJustifiedFromDiscovery = false;
+    state.packageUsedDormantLabel = true;
+    addTurn('pro', "Yeah... I'm not really feeling great about this. I'll think about it.");
+    setTimeout(() => {
+      addCoaching("Even after the retry, 'dormant' showed up again. On a real call, this is one of the fastest ways to lose a re-engagement conversation. Internal labels stay internal — never say 'dormant' to a pro.");
+      setTimeout(turn9, 4000);
+    }, 1200);
+    return;
+  }
+
+  // CASE 1: No package named at all (no features described, no other package mentioned)
+  if (!packageNamed) {
+    if (!state.packageRetried) {
+      state.packageRetried = true;
+      addTurn('pro', "I'm not sure what you're recommending — can you be specific?");
+      setTimeout(() => {
+        addRetryBanner("Your response didn't introduce a specific package. Linda needs a clear recommendation — describe what's included ($0 upfront, 30 days of AE support, no agreement) and anchor it in her words.");
+        setTimeout(() => {
+          showTextInput(
+            "Introduce the right package for Linda (retry)",
+            "Linda qualifies internally for the Dormant Pro Package — $0 upfront, 30 days of AE support, no signed agreement. Don't say 'dormant' to her. Describe the package by what it does for her, and anchor it in her experience and goal.",
+            handlePackageRecommendation
+          );
+        }, 800);
+      }, 1000);
+      return;
+    } else {
+      state.packageRecommended = null;
+      state.packageJustifiedFromDiscovery = false;
+      addTurn('pro', "Okay... I'm still not really clear on what you're suggesting. Maybe I'll think about it.");
+      setTimeout(() => {
+        addCoaching("On a real call, this would be a serious misstep on the rubric. Linda needs a clear recommendation — describe the package by what it offers her ($0 upfront, 30 days of AE support, no agreement) and anchor it in her words.");
+        setTimeout(turn9, 4000);
+      }, 1200);
+      return;
+    }
+  }
+
+  // Package was named — check anchoring against Linda's discovery answers
+  const discoveryAnchors = [
+    'didn\'t respond', 'didn’t respond', 'no response', 'not responding', 'slot machine', 'walkthrough', 'walked', 'guidance',
+    'shrinking', 'losing', 'retire', 'florida', 'longtime', 'long-time', 'word of mouth', 'word-of-mouth',
+    'replace', '4', '5', 'four', 'five', 'new customer', 'long-term', 'long term',
+    'experience', 'last time', 'before', 'concern', 'support', 'help', 'set up', 'setup',
+    'week', 'first week', 'tried',
+    'handyman', 'helper', 'residential', 'nine years', '9 years', '$200', '$300', 'per job', 'per-job'
+  ];
+  const matchCount = discoveryAnchors.filter(a => r.includes(a)).length;
+  const justifiedFromDiscovery = matchCount >= 2;
+  const isCorrect = packageNamed === 'Dormant Pro Package' && justifiedFromDiscovery && !usedDormantLabel;
+
+  // CASE 2: Correct package described by features, well anchored — pass
+  if (isCorrect) {
+    state.packageRecommended = packageNamed;
+    state.packageJustifiedFromDiscovery = true;
+    addTurn('pro', "Okay... that's actually different from what I expected. No money upfront makes this feel less risky. But I'm still not totally convinced — what's actually different about how it would go this time?");
+    setTimeout(turn9, 1500);
+    return;
+  }
+
+  // CASE 3: Right package (described by features) but weak anchoring — RETRY allowed
+  if (packageNamed === 'Dormant Pro Package' && !justifiedFromDiscovery) {
+    if (!state.packageRetried) {
+      state.packageRetried = true;
+      addTurn('pro', "Okay... but why would this work for me though? You haven't really tied it to anything specific about my situation.");
+      setTimeout(() => {
+        addRetryBanner("The package fits — but you didn't anchor it in HER words. Try again. Reference specific things she said: she felt like she was throwing money at a slot machine, leads weren't responding in that first week, nobody walked her through it, she's losing 1-2 customers a year to retirement, she just wants to replace 4-5 a year.");
+        setTimeout(() => {
+          showTextInput(
+            "Introduce the right package for Linda (retry)",
+            "Describe the package by features ($0 upfront, 30 days of AE support, no agreement) and reference at least 2 specific things Linda told you (e.g., 'You said it felt like a slot machine that first week — the 30 days of AE support means you'll have someone walking you through this every step' or 'You mentioned losing 1-2 customers a year — finding 4-5 new long-term ones is exactly what we'd help you set up').",
+            handlePackageRecommendation
+          );
+        }, 800);
+      }, 1000);
+      return;
+    } else {
+      // Already retried, still weak — record and advance
+      state.packageRecommended = packageNamed;
+      state.packageJustifiedFromDiscovery = false;
+      addTurn('pro', "Hmm. Okay. I'm still not sure this is for me. Let me think about it.");
+      setTimeout(() => {
+        addCoaching("Even on the retry, the recommendation didn't tie back to Linda's discovery answers. With a dormant pro, this is the difference between a re-engagement and a 'thanks but no thanks.' Always reference specific things they told you — especially what didn't work last time.");
+        setTimeout(turn9, 4000);
+      }, 1200);
+      return;
+    }
+  }
+
+  // CASE 4: Wrong package — RETRY allowed
+  if (packageNamed !== 'Dormant Pro Package') {
+    if (!state.packageRetried) {
+      state.packageRetried = true;
+      let pushback = '';
+      let retryHint = '';
+
+      if (packageNamed === 'Plus') {
+        pushback = "$300 upfront? After what I told you about my last experience? I'm not really comfortable putting money down again until I see this is going to work this time.";
+        retryHint = "Linda qualifies for our re-engagement option — $0 upfront, no agreement, 30 days of AE support. Asking her to put money down is exactly the kind of move that ends the call. Don't say 'dormant' to her, but offer the no-cost re-entry that fits where she is.";
+      } else if (packageNamed === 'Premium') {
+        pushback = "$600? You just heard me say I felt like I was throwing money at a slot machine that first week. There's no way I'm doing $600 upfront.";
+        retryHint = "Premium is way out of step with where Linda is emotionally and financially. She qualifies for the no-cost re-entry option — $0 upfront, no agreement, just 30 days of AE support to set it up right this time. Describe it by features, not by 'dormant.'";
+      } else if (packageNamed === 'Base') {
+        pushback = "$150 still feels like a risk. I already paid for leads once and got nothing. Why would I do that again?";
+        retryHint = "Base requires upfront payment. Linda qualifies for the no-cost re-entry option — $0 upfront, no agreement, with 30 days of AE support to address exactly what didn't work for her last time. Describe it by features, not 'dormant.'";
+      } else if (packageNamed === 'Enterprise') {
+        pushback = "Whoa — $1000+? I run a two-person handyman business. That's not even close to right for me.";
+        retryHint = "Enterprise is for sophisticated multi-team operations. Linda qualifies for the no-cost re-entry option — $0 upfront, designed for pros in her situation. Describe it by features, not by internal name.";
+      }
+
+      addTurn('pro', pushback);
+      setTimeout(() => {
+        addRetryBanner("Linda's pushback is real — that package isn't the right fit for someone in her situation. Try again with the no-cost re-engagement option.");
+        setTimeout(() => {
+          addCoaching(retryHint);
+          setTimeout(() => {
+            showTextInput(
+              "Introduce the right package for Linda (retry)",
+              "Linda qualifies for our no-cost re-engagement option (the Dormant Pro Package internally): $0 upfront, no agreement, 30 days of AE support, includes the Success Guide and post-sale email. Don't say 'dormant' to her. Describe it by what it offers and anchor it in her words and concerns.",
+              handlePackageRecommendation
+            );
+          }, 1500);
+        }, 800);
+      }, 1500);
+      return;
+    } else {
+      // Already retried, still wrong — record and advance
+      state.packageRecommended = packageNamed;
+      state.packageJustifiedFromDiscovery = false;
+
+      addTurn('pro', "I appreciate the call, but I really don't think this is going to work for me. I'll think about it.");
+      setTimeout(() => {
+        addCoaching(`On a real call, recommending ${packageNamed} for someone in Linda's situation typically loses the deal. She qualifies for the no-cost re-engagement option ($0 upfront, 30 days of AE support) — designed exactly for pros who went quiet. Use the Sales Playbook (sidebar) to confirm details, and remember to describe it by features, not by 'dormant.'`);
+        setTimeout(turn9, 4000);
+      }, 1200);
+      return;
+    }
+  }
+}
+
+// ============================================================
+// TURN 9 — ROI math with smarter validation and retry
+// ============================================================
+
+function turn9() {
+  window.__nextAfterError = showScorecard;
+  showTextInput(
+    "Frame the re-engagement for Linda",
+    "Use Linda's numbers (replacing 4-5 long-term customers a year, $200-$300 per job) and the Mega Dashboard (sidebar) for handyman market lead cost averages.\n\nTo pass, your response should:\n• Reference cost as an average or a range (not as an exact quote)\n• Connect the math back to Linda's stated goal (replacing the customers she's losing)\n• Show the comparison between cost and revenue so she can see the value",
+    handleROIResponse
+  );
+}
+
+function handleROIResponse(response) {
+  const r = response.toLowerCase();
+
+  // Capture for manager review
+  state.roiResponseText = response;
+
+  const hasNumbers = /\d/.test(response);
+  const hasFinancialLanguage = /(revenue|income|earn|profit|lead|cost|spend|return|investment|month|week|job|hire|customer|client|replace|long-term|long term|recurring)/i.test(response);
+  const isComplete = response.length >= 30;
+
+  if (!hasNumbers || !hasFinancialLanguage || !isComplete) {
+    if (!state.roiRetried) {
+      state.roiRetried = true;
+      addTurn('pro', "I'm not really following — can you walk me through that more clearly?");
+      setTimeout(() => {
+        addRetryBanner("Your response didn't show the re-engagement math. You need numbers (Linda's revenue per job, lead costs from the Mega Dashboard) AND financial reasoning (what she'd earn vs. spend to replace lost customers). Try again.");
+        setTimeout(() => {
+          showTextInput(
+            "Frame the re-engagement for Linda (retry)",
+            "Show the math: Linda makes $200-$300 per job. She wants to replace 4-5 long-term residential customers per year. A long-term residential customer might mean 4-6 jobs a year, so even one new long-term customer is $800-$1,800/year in steady revenue. The Mega Dashboard shows handyman leads average around $28 (typical range $22-$34). Walk her through what those leads would cost vs. what she'd earn from replacing her lost customers.",
+            handleROIResponse
+          );
+        }, 800);
+      }, 1000);
+      return;
+    } else {
+      state.roiUsedMarketAverages = false;
+      state.roiQuotedExactPrice = false;
+      addTurn('pro', "Okay... I'm still not really sure. Maybe I'll think about it.");
+      setTimeout(() => {
+        addCoaching("On a real call, this would mean Linda leaves the call without seeing the value. The math conversation is your most important moment — especially with a dormant pro. Always show real math using her numbers and the Mega Dashboard's averages.");
+        setTimeout(showFinalCoachingThenContinue, 4000);
+      }, 1200);
+      return;
+    }
+  }
+
+  // Pattern matching
+  const avgLanguage = /(average|avg|around|roughly|about|market|typically|range|between|approximately|likely|somewhere|generally|usually|might|could)/i.test(response);
+
+  // Dashboard reference: handyman category numbers ($22, $28, $34)
+  const rawDashboardRefs = /\b(22|25|28|30|32|34|112)\b/.test(response);
+  const anyCostDollar = /\$\s*\d+/.test(response) && /(lead|spend|cost|month|pay|invest|marketing|put\s+in|put\s+into)/i.test(response);
+  const dashboardUsed = rawDashboardRefs || anyCostDollar;
+
+  const hasRangeFraming = /(\$\s*\d+\s*[-–to]+\s*\$?\s*\d+|between\s*\$?\s*\d+\s*and\s*\$?\s*\d+|range|higher\s+end|lower\s+end|on\s+average|ballpark)/i.test(response);
+
+  const exactQuoteFlags = [
+    /\$\d+\s*per\s*lead/i,
+    /each\s*lead\s*(?:is|costs?)\s*\$\d+/i,
+    /lead\s*(?:is|costs?)\s*\$\d+(?!\s*[-–to])/i,
+  ];
+  const quotedExact = exactQuoteFlags.some(re => re.test(response)) && !avgLanguage && !hasRangeFraming;
+
+  const hasRevenueMath = /(\$\s*\d{3,}|\d+\s*(more\s+)?(jobs?|customers?|clients?)|\d+\s*(x|times)|\d+%|return|profit|extra|net|earn|make|bring\s+in|gain|replace)/i.test(response);
+
+  // Connection to Linda's situation: per-job revenue, replacing customers, long-term clients
+  const referencesJobMath = /(\$\s*200|\$\s*300|per\s+job|each\s+job|long-term|long term|recurring|replace|losing|lost\s+customer|4|5|four|five)/i.test(response);
+  const referencesRevenueAmount = /\$\s*\d{3,}/.test(response);
+  const revenueConnected = (referencesJobMath || referencesRevenueAmount) && hasRevenueMath;
+
+  state.roiUsedMarketAverages = avgLanguage && (dashboardUsed || hasRangeFraming);
+  state.roiQuotedExactPrice = quotedExact;
+
+  let proResponse, coachingMsg;
+
+  if (quotedExact) {
+    proResponse = "Wait — so it's exactly that per lead? Is that guaranteed?";
+    coachingMsg = "Critical: you quoted an exact lead price. Lead prices vary weekly based on category, zip code, and demand. The Mega Dashboard gives 30-day market averages — never exact quotes. Always say 'averages around' or 'in the $X-$Y range.'";
+  } else if (state.roiUsedMarketAverages && revenueConnected) {
+    proResponse = "Okay... that actually makes more sense than the way I was thinking about it last time. I was just looking at lead cost. You're framing it as customer replacement value. Yeah — that math works for me. I'm at least willing to give it another try.";
+    coachingMsg = null;
+  } else if (revenueConnected) {
+    proResponse = "I follow the customer math. But what are leads going to actually cost me, ballpark?";
+    coachingMsg = "You connected to Linda's revenue but didn't reference the Mega Dashboard market averages. The dashboard is your tool — it lets you give a credible cost range without making promises. Especially important with a dormant pro who's already been burned by perceived overpromising.";
+  } else if (state.roiUsedMarketAverages) {
+    proResponse = "Okay, I follow the cost side. But how does that translate to actual customers I'd be getting?";
+    coachingMsg = "You used market averages well, but didn't fully connect the math to Linda's revenue. Combine her numbers ($200-$300 per job × 4-5 new long-term customers/year) with the lead costs to show her the full picture.";
+  } else {
+    proResponse = "I'm not really following. Can you walk me through that more clearly?";
+    coachingMsg = "The strongest re-engagement conversations combine Linda's numbers ($200-$300/job × 4-5 new long-term customers per year = real recurring revenue) with Mega Dashboard market averages ($22-$34 typical for handyman leads), framed as ranges. Show her the full picture: lead spend vs. customer replacement value.";
+  }
+
+  addTurn('pro', proResponse);
+  showFinalCoachingThenContinue(coachingMsg);
+}
+
+function showFinalCoachingThenContinue(coachingMsg) {
+  if (typeof coachingMsg === 'string') {
+    setTimeout(() => addCoaching(coachingMsg), 1200);
+    setTimeout(() => addContinueButton(), 2800);
+  } else if (coachingMsg === null) {
+    setTimeout(() => addContinueButton(), 1500);
+  } else {
+    // Called with no arg (from retry-fail path)
+    setTimeout(() => addContinueButton(), 800);
+  }
+}
+
+function addContinueButton() {
+  const btn = document.createElement('button');
+  btn.className = 'continue-btn';
+  btn.textContent = 'Continue to Results →';
+  btn.onclick = () => {
+    btn.remove();
+    showScorecard();
+  };
+  main.appendChild(btn);
+  btn.scrollIntoView({ behavior: 'smooth', block: 'end' });
+}
+
+// ============================================================
+// SCORECARDS
+// ============================================================
+
+function showFailScorecard() {
+  updateRubric('rubric-1', false);
+  updateRubric('rubric-2', false);
+  updateRubric('rubric-3', false);
+
+  main.innerHTML = `
+    <div class="fail-banner">
+      <strong>Linda ended the call.</strong>
+      You hit 3 missteps before completing discovery. In a real call, this is what happens when discovery feels like a script or a pitch — pros disengage and end the call before you ever get to recommend a package.
+    </div>
+    <div class="scorecard failed">
+      <h2>Practice Run Did Not Complete</h2>
+      <div class="score low">0 / 3</div>
+      <div style="font-size: 16px; color: #444; margin-bottom: 24px;">Discovery never got to recommendation.</div>
+
+      <div class="scorecard-actions">
+        <button class="review-btn" onclick="showTranscriptReview()">📜 Review the conversation</button>
+      </div>
+
+      <div class="breakdown">
+        <h3>What to focus on next time</h3>
+        <div class="breakdown-item fail">
+          <div class="icon">!</div>
+          <div class="text">
+            <strong>Earn permission before pre-framing</strong>
+            <span>Even subtly orienting the call around "what we have" before the pro speaks closes off discovery space.</span>
+          </div>
+        </div>
+        <div class="breakdown-item fail">
+          <div class="icon">!</div>
+          <div class="text">
+            <strong>Layer your follow-ups</strong>
+            <span>The strongest discovery questions surface two things at once — the present AND the implication, the structure AND the capacity, the pain AND its cost.</span>
+          </div>
+        </div>
+        <div class="breakdown-item fail">
+          <div class="icon">!</div>
+          <div class="text">
+            <strong>Engage the prior bad experience before recommending</strong>
+            <span>With a dormant pro, dismissing or skipping past what didn't work last time loses the call. Surface the specific issue first — then recommend.</span>
+          </div>
+        </div>
+      </div>
+
+      ${renderManagerFeedback(0, 'failed')}
+
+      <button class="replay-btn" onclick="resetAndReplay()">Practice again</button>
+    </div>
+  `;
+}
+
+// ============================================================
+// RUBRIC FEEDBACK HELPERS — used by both scorecard and manager copy
+// ============================================================
+
+function getLayeredFeedback(passed) {
+  return passed
+    ? `You layered your follow-ups — surfacing two things at once and following the strongest signal Linda gave you.`
+    : `Your follow-ups were valid but not layered. The strongest moves on this call surface present-AND-implication, structure-AND-capacity, or pain-AND-cost in a single question.`;
+}
+
+function getRecoveryFeedback(passed) {
+  // Compound criterion: surfaced what went wrong AND introduced the right package anchored AND didn't use "dormant" label
+  const surfaced = state.surfacedWhatWentWrong;
+  const correctPackage = state.packageRecommended === 'Dormant Pro Package';
+  const anchored = state.packageJustifiedFromDiscovery;
+  const usedDormantLabel = state.packageUsedDormantLabel;
+
+  if (passed) {
+    return `You surfaced what went wrong on Linda's last Thumbtack run, then introduced the package by its features ($0 upfront, 30 days of AE support, no agreement) anchored in her words. You also avoided internal jargon — never said "dormant" out loud, which protects her dignity in the conversation.`;
+  }
+
+  // Specific failure modes
+  if (usedDormantLabel) {
+    return `You said "dormant" or "dormant pro package" out loud to Linda. That's internal Sales jargon — to her ears, it sounds like "package for failures." It signals she's been categorized as a problem, which is the last thing a skeptical pro coming back needs to hear. Always describe the package by what it offers her ($0 upfront, 30 days of AE support, no agreement), not by what we call it internally.`;
+  }
+  if (!surfaced && !correctPackage) {
+    return `You skipped past Linda's prior bad experience AND missed the right package. With a dormant pro, the muscle is to ASK what didn't work last time before recommending anything — and the right package for her is the no-cost re-engagement option ($0 upfront, 30 days of AE support).`;
+  }
+  if (!surfaced && correctPackage && !anchored) {
+    return `You found the right package, but you skipped past Linda's prior bad experience AND didn't anchor the recommendation in her words. The order matters: surface what went wrong, then anchor the recommendation in her concerns.`;
+  }
+  if (!surfaced && correctPackage && anchored) {
+    return `You introduced the package well, but you skipped past Linda's prior bad experience. With a dormant pro, asking what specifically didn't work last time is the move that earns trust before the recommendation lands.`;
+  }
+  if (surfaced && !correctPackage) {
+    return `You did the recovery work and surfaced what went wrong on Linda's last run — but you recommended ${state.packageRecommended || 'no specific package'} instead of the no-cost re-engagement option. Linda is dormant 6 months — she qualifies for the $0-upfront package designed exactly for re-engaging pros who went quiet.`;
+  }
+  if (surfaced && correctPackage && !anchored) {
+    return `You did the recovery work AND found the right package — but didn't anchor the recommendation in Linda's specific words. Reference what she said about her experience and her goal so it feels personal, not generic.`;
+  }
+  return `Recovery and package criterion did not pass.`;
+}
+
+function getROIFeedback(passed) {
+  if (passed) {
+    return `You used Mega Dashboard market averages, framed costs as ranges, and connected the math to Linda's stated goal of replacing lost customers.`;
+  }
+  if (state.roiQuotedExactPrice) {
+    return `You quoted an exact lead price. Lead prices vary weekly — the Mega Dashboard gives averages only.`;
+  }
+  return `Your re-engagement math didn't reference the Mega Dashboard market averages OR didn't fully connect to Linda's stated goal of replacing lost customers.`;
+}
+
+function showScorecard() {
+  const layeredFollowUps = state.followUpsAsked >= 4 && state.shallowChoicesMade <= 1;
+  // Compound criterion: surfaced AND correct package AND anchored AND didn't say "dormant" out loud
+  const recoveryAndPackage = state.surfacedWhatWentWrong &&
+                              state.packageRecommended === 'Dormant Pro Package' &&
+                              state.packageJustifiedFromDiscovery &&
+                              !state.packageUsedDormantLabel;
+  const roiCorrect = state.roiUsedMarketAverages && !state.roiQuotedExactPrice;
+
+  const score = [layeredFollowUps, recoveryAndPackage, roiCorrect].filter(Boolean).length;
+  const scoreClass = score === 3 ? '' : score === 2 ? 'partial' : 'low';
+  const headline = score === 3 ? "Strong call." : score === 2 ? "Solid foundation, room to sharpen." : "Worth running through again.";
+
+  updateRubric('rubric-1', layeredFollowUps);
+  updateRubric('rubric-2', recoveryAndPackage);
+  updateRubric('rubric-3', roiCorrect);
+
+  main.innerHTML = `
+    <div class="scorecard">
+      <h2>Practice Run Complete</h2>
+      <div class="score ${scoreClass}">${score} / 3</div>
+      <div style="font-size: 18px; color: #444; margin-bottom: 16px;">${headline}</div>
+
+      <div class="scorecard-actions">
+        <button class="review-btn" onclick="showTranscriptReview()">📜 Review the conversation</button>
+      </div>
+
+      <div class="breakdown">
+        <h3>Rubric Breakdown</h3>
+
+        <div class="breakdown-item ${layeredFollowUps ? 'pass' : 'fail'}">
+          <div class="icon">${layeredFollowUps ? '✓' : '✗'}</div>
+          <div class="text">
+            <strong>Layered follow-up questions</strong>
+            <span>${getLayeredFeedback(layeredFollowUps)}</span>
+          </div>
+        </div>
+
+        <div class="breakdown-item ${recoveryAndPackage ? 'pass' : 'fail'}">
+          <div class="icon">${recoveryAndPackage ? '✓' : '✗'}</div>
+          <div class="text">
+            <strong>Surfaced what went wrong + introduced the right package</strong>
+            <span>${getRecoveryFeedback(recoveryAndPackage)}</span>
+          </div>
+        </div>
+
+        <div class="breakdown-item ${roiCorrect ? 'pass' : 'fail'}">
+          <div class="icon">${roiCorrect ? '✓' : '✗'}</div>
+          <div class="text">
+            <strong>Re-engagement framed using market averages</strong>
+            <span>${getROIFeedback(roiCorrect)}</span>
+          </div>
+        </div>
+      </div>
+
+      ${renderManagerFeedback(score, 'completed')}
+
+      <button class="replay-btn" onclick="resetAndReplay()">Practice again</button>
+    </div>
+  `;
+}
+
+// Transcript review modal
+function showTranscriptReview() {
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+
+  const transcriptHtml = state.transcript.map(t => `
+    <div class="turn ${t.speaker}">
+      <div class="speaker">${t.speaker === 'ae' ? 'You (AE)' : persona.name}</div>
+      <div class="bubble"></div>
+    </div>
+  `).join('');
+
+  overlay.innerHTML = `
+    <div class="transcript-modal">
+      <h2>📜 Conversation Review</h2>
+      <div id="transcript-content">${transcriptHtml}</div>
+      <button class="close-btn" onclick="closeTranscript()" style="margin-top: 20px;">Close</button>
+    </div>
+  `;
+
+  document.body.appendChild(overlay);
+
+  // Fill in bubble text safely
+  const bubbles = overlay.querySelectorAll('.bubble');
+  state.transcript.forEach((t, i) => {
+    if (bubbles[i]) bubbles[i].textContent = t.text;
+  });
+
+  overlay.onclick = (e) => {
+    if (e.target === overlay) closeTranscript();
+  };
+}
+
+function closeTranscript() {
+  const overlay = document.querySelector('.modal-overlay');
+  if (overlay) overlay.remove();
+}
+
+function renderManagerFeedback(score, status) {
+  const layeredFollowUps = state.followUpsAsked >= 4 && state.shallowChoicesMade <= 1;
+  const recoveryAndPackage = state.surfacedWhatWentWrong &&
+                              state.packageRecommended === 'Dormant Pro Package' &&
+                              state.packageJustifiedFromDiscovery &&
+                              !state.packageUsedDormantLabel;
+  const roiCorrect = state.roiUsedMarketAverages && !state.roiQuotedExactPrice;
+
+  return `
+    <div class="manager-feedback">
+      <h3>💬 Want coaching feedback? (Optional)</h3>
+      <div class="helper">If you'd like your manager's take on this practice run, copy your results and send them in Slack. This is optional for practice — your scored attempt comes later in the course.</div>
+
+      <label for="ae-name">Your Name</label>
+      <input type="text" id="ae-name" placeholder="First Last">
+
+      <label for="reflection">Your Reflection (optional)</label>
+      <textarea id="reflection" placeholder="What's one thing you'd do differently on a real call?"></textarea>
+
+      <button class="copy-btn" onclick="copyToClipboard(${score}, '${status}', ${layeredFollowUps}, ${recoveryAndPackage}, ${roiCorrect})">
+        📋 Copy Results
+      </button>
+
+      <div class="copy-confirm" id="copy-confirm">✓ Copied to clipboard. Paste into Slack.</div>
+    </div>
+  `;
+}
+
+function buildResultsText(score, status, layered, recoveryOk, roiOk) {
+  const aeName = (document.getElementById('ae-name')?.value || '[Name]').trim();
+  const reflection = (document.getElementById('reflection')?.value || '').trim();
+
+  // Helper: indent feedback text so it's visually grouped under the criterion
+  const indent = (text) => text.split('\n').map(line => '   ' + line).join('\n');
+
+  // Helper: word-wrap long feedback text for cleaner Slack rendering
+  const wrap = (text, width) => {
+    width = width || 70;
+    const words = text.split(' ');
+    const lines = [];
+    let currentLine = '';
+    for (const word of words) {
+      if ((currentLine + ' ' + word).trim().length > width) {
+        lines.push(currentLine.trim());
+        currentLine = word;
+      } else {
+        currentLine = (currentLine + ' ' + word).trim();
+      }
+    }
+    if (currentLine) lines.push(currentLine.trim());
+    return lines.join('\n');
+  };
+
+  let text = `DIAGNOSTIC DISCOVERY ROLEPLAY — RESULTS\n`;
+  text += `Persona: Linda Thompson (Handyman, Dormant)\n`;
+  text += `AE: ${aeName}\n`;
+  text += `Status: ${status === 'failed' ? 'Call did not complete (3 missteps)' : 'Call completed'}\n`;
+  text += `Score: ${score} / 3\n\n`;
+
+  text += `RUBRIC:\n\n`;
+
+  text += `${layered ? '[PASS]' : '[FAIL]'} Layered follow-up questions\n`;
+  text += indent(wrap(getLayeredFeedback(layered))) + '\n\n';
+
+  text += `${recoveryOk ? '[PASS]' : '[FAIL]'} Surfaced what went wrong + introduced the right package\n`;
+  text += indent(wrap(getRecoveryFeedback(recoveryOk))) + '\n\n';
+
+  text += `${roiOk ? '[PASS]' : '[FAIL]'} Re-engagement framed using market averages\n`;
+  text += indent(wrap(getROIFeedback(roiOk))) + '\n\n';
+
+  // Include the AE's actual typed responses
+  if (state.packageResponseText || state.roiResponseText) {
+    text += `WHAT THE AE TYPED:\n\n`;
+
+    if (state.packageResponseText) {
+      text += `Package recommendation:\n`;
+      text += `"${state.packageResponseText}"\n\n`;
+    }
+
+    if (state.roiResponseText) {
+      text += `Re-engagement math:\n`;
+      text += `"${state.roiResponseText}"\n\n`;
+    }
+  }
+
+  if (reflection) {
+    text += `REFLECTION:\n`;
+    text += `${reflection}\n`;
+  }
+
+  return text;
+}
+
+function copyToClipboard(score, status, layered, packageOk, roiOk) {
+  const text = buildResultsText(score, status, layered, packageOk, roiOk);
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(() => {
+      onCopySuccess();
+    }).catch(() => fallbackCopy(text));
+  } else {
+    fallbackCopy(text);
+  }
+}
+
+function fallbackCopy(text) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.select();
+  try { document.execCommand('copy'); } catch (e) {}
+  document.body.removeChild(ta);
+  onCopySuccess();
+}
+
+function onCopySuccess() {
+  const confirm = document.getElementById('copy-confirm');
+  if (confirm) {
+    confirm.classList.add('show');
+    setTimeout(() => confirm.classList.remove('show'), 4000);
+  }
+}
+
+function resetAndReplay() {
+  state.followUpsAsked = 0;
+  state.shallowChoicesMade = 0;
+  state.missteps = 0;
+  state.packageRecommended = null;
+  state.packageJustifiedFromDiscovery = false;
+  state.packageRetried = false;
+  state.roiUsedMarketAverages = false;
+  state.roiQuotedExactPrice = false;
+  state.roiRetried = false;
+  state.failed = false;
+  state.turn3Path = null;
+  state.transcript = [];
+  state.packageResponseText = null;
+  state.roiResponseText = null;
+  ['rubric-1', 'rubric-2', 'rubric-3'].forEach(id => {
+    const el = document.getElementById(id);
+    el.classList.remove('passed', 'failed');
+    el.querySelector('.check').textContent = '·';
+  });
+  ['strike-1', 'strike-2', 'strike-3'].forEach(id => {
+    const el = document.getElementById(id);
+    el.className = 'strike-dot';
+  });
+  renderIntro();
+}
+
+renderIntro();
+</script>
+
+</body>
+</html>
